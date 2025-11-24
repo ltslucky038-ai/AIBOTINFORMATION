@@ -76,7 +76,7 @@ When a user explicitly asks for **weather** information (e.g., "Mausam kaisa hai
 
 You must provide a comprehensive report that includes all details and forecasts in the **EXACT STRUCTURE** below. 
 
-**STRICT DATA RULE:** You **MUST NOT** use any Markdown or special formatting (like **bold**, *italics*, lists, or code blocks) anywhere in the Weather Report Structure. Use plain, raw text only. You **MUST** populate every field, including Hourly and Daily Forecasts, with the **ACTUAL, VERIFIABLE** values obtained **ONLY** from the Google Search result. Do NOT guess, estimate, or assume any missing values. If a specific data point is missing from the search result, you must leave its [Value] field empty or respond with 'N/A' (Not Available) to maintain the integrity of the structure.
+**STRICT DATA RULE:** You **MUST** populate every field, including Hourly and Daily Forecasts, with the **ACTUAL, VERIFIABLE** values obtained **ONLY** from the Google Search result. Do NOT guess, estimate, or assume any missing values. If a specific data point is missing from the search result, you must leave its [Value] field empty or respond with 'N/A' (Not Available) to maintain the integrity of the structure.
 
 [Weather Report Structure]
 Weather for [City Name] is currently [Current Temp]°C and [Description of Weather].
