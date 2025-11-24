@@ -572,7 +572,7 @@
 // ======================================================================
 
 // 💡 VITAL FIX: LOCALHOST URL को आपके लाइव Render URL से बदल दिया गया है
-const CHAT_API_ENDPOINT = 'https://ai-chat-app-9zkh.onrender.com/api/chat'; 
+const CHAT_API_ENDPOINT = ' https://aibotinformation.onrender.com'; 
 // Note: मैंने यहाँ '/api/chat' को सीधे ENDPOINT में जोड़ दिया है
 
 // 💾 Global State & Memory
