@@ -1,6 +1,3 @@
-
-
-// // ✅ FIX: URL से अनावश्यक स्पेस हटा दिया गया है
 // const CHAT_API_ENDPOINT = 'https://aibotinformation.onrender.com/api/chat'; 
 
 // // 💾 Global State & Memory
@@ -243,7 +240,7 @@
 //     
 //     const aqiInfo = getAqiDescription(data.details.aqiIndex || 'N/A');
 //     aqiIndexEl.textContent = data.details.aqiIndex || 'N/A';
-//     aqiDescriptionEl.textContent = aqiInfo.description;
+//     aqiDescriptionEl.textContent = data.details.aqi || aqiInfo.description; // Use parsed AQI description first
 //     aqiDescriptionEl.className = `aqi-pill text-xs mt-1 p-0.5 rounded ${aqiInfo.classes}`;
 //     
 //     uvIndexEl.textContent = data.details.uvIndex || 'N/A';
@@ -390,36 +387,75 @@
 //     const pressureRegex = /Pressure\s*:\s*([^,]+?)\s*(?:,|\s*UV)/i;
 //     const uvRegex = /UV\s*Index\s*:\s*([^,]+?)\s*(?:,|\s*Air)/i;
 //     const aqiRegex = /Air\s*Quality\s*:\s*([^.]+)/i; 
+//     
 //     const getMatch = (regex) => text.match(regex)?.[1]?.trim().replace(/\[|\]|%|hPa|km\/h|\./g, '') || 'N/A';
+//     
 //     data.details.humidity = getMatch(detailsRegex);
 //     data.details.windSpeed = getMatch(windRegex);
 //     data.details.pressure = getMatch(pressureRegex);
 //     data.details.uvIndex = getMatch(uvRegex);
+//     
+//     // --- AQI Index & Description FIX ---
 //     const aqiFull = getMatch(aqiRegex);
 //     if (aqiFull !== 'N/A') {
-//         data.details.aqi = aqiFull.match(/([A-Za-z\s]+)/)?.[1]?.trim() || aqiFull;
-//         data.details.aqiIndex = aqiFull.match(/\((\d+)\)/)?.[1] || aqiFull.match(/AQI\s*(\d+)/i)?.[1] || aqiFull.match(/(\d+)/)?.[1] || 'N/A';
+//         // AQI Index in brackets (e.g., (105)) or just a number
+//         const indexMatch = aqiFull.match(/\((\s*\d+)\s*\)/) || aqiFull.match(/(\s*\d+)/);
+//         data.details.aqiIndex = indexMatch?.[1]?.trim() || 'N/A';
+
+//         // AQI Description (e.g., Moderate, Unhealthy)
+//         const descMatch = aqiFull.match(/^([A-Za-z\s]+?)\s*(?:\()/) || aqiFull.match(/^([A-Za-z\s]+)/);
+//         data.details.aqi = descMatch?.[1]?.trim() || 'N/A';
 //     }
+//     
 //     if (data.temp.current !== 'N/A' && data.temp.feelsLike === 'N/A') {
 //         data.temp.feelsLike = data.temp.current; 
 //     }
-//     // --- 5. Mock Forecast Data (Using Parsed Temp) ---
-//     if (data.temp.current !== 'N/A' && !isNaN(parseFloat(data.temp.current))) {
-//         const baseTemp = parseFloat(data.temp.current);
-//         const desc = data.description !== 'N/A' ? data.description : 'clear sky';
+//     
+//     // --- 5. Live Forecast Parsing (Updated to parse Gemini's output) ---
+//     const parseForecast = (forecastType, textToParse) => {
+//         const results = [];
+//         // RegEx to find the entire forecast line (e.g., "Hourly Forecast: [..],[..]")
+//         const sectionMatch = textToParse.match(new RegExp(`${forecastType}\\s*Forecast\\s*:\\s*(.*)`, 'i'));
 //         
-//         data.forecasts.hourly = [
-//             { time: '3h', temp: baseTemp + 1, description: desc.includes('rain') ? 'partly cloudy' : desc },
-//             { time: '6h', temp: baseTemp + 2, description: desc },
-//             { time: '9h', temp: baseTemp + 1, description: desc.includes('rain') ? 'clear sky' : desc }
-//         ].filter(item => !isNaN(item.temp));
+//         if (!sectionMatch) return results;
 
-//         data.forecasts.daily = [
-//             { day: 'Mon', tempMax: baseTemp + 3, tempMin: baseTemp - 5, description: 'Partly Cloudy' },
-//             { day: 'Tue', tempMax: baseTemp + 2, tempMin: baseTemp - 4, description: 'Clouds' },
-//             { day: 'Wed', tempMax: baseTemp + 1, tempMin: baseTemp - 3, description: 'Rain' }
-//         ].filter(item => !isNaN(item.tempMax));
-//     }
+//         const forecastText = sectionMatch[1]; 
+//         
+//         // RegEx for Daily: [Day, Max, Min, Description]
+//         // Allows for optional °C/°F after temps
+//         const dailyItemRegex = /\[([^\]]+?)\s*,\s*(\d+)\s*(?:°C|°F)?\s*,\s*(\d+)\s*(?:°C|°F)?\s*,\s*([^\]]+?)\]/gi; 
+//         
+//         // RegEx for Hourly: [Time, Temp, Description]
+//         const hourlyItemRegex = /\[([^\]]+?)\s*,\s*(\d+)\s*(?:°C|°F)?\s*,\s*([^\]]+?)\]/gi;
+
+//         let match;
+//         if (forecastType.toLowerCase() === 'daily') {
+//             while ((match = dailyItemRegex.exec(forecastText)) !== null) {
+//                 results.push({
+//                     day: match[1].trim(),
+//                     tempMax: parseFloat(match[2]),
+//                     tempMin: parseFloat(match[3]),
+//                     description: match[4].trim()
+//                 });
+//             }
+//         } else if (forecastType.toLowerCase() === 'hourly') {
+//             while ((match = hourlyItemRegex.exec(forecastText)) !== null) {
+//                 results.push({
+//                     time: match[1].trim(),
+//                     temp: parseFloat(match[2]),
+//                     description: match[3].trim().replace(/\[|\]/g, '')
+//                 });
+//             }
+//         }
+//         return results;
+//     };
+//     
+//     // Apply the new live forecast parsing
+//     data.forecasts.hourly = parseForecast('Hourly', text);
+//     data.forecasts.daily = parseForecast('Daily', text);
+    
+//     // Original Mocking Logic removed successfully!
+
 //     if (data.temp.current === 'N/A' && data.city === 'N/A') return null;
 //     return data;
 // };
@@ -805,17 +841,18 @@ const updateWeatherUI = (data) => {
     const iconData = getWeatherIconName(data.description || '');
     weatherIconEl.innerHTML = `<i data-lucide="${iconData.icon}" class="text-white" style="width: 6rem; height: 6rem;"></i>`;
 
-    humidityEl.textContent = data.details.humidity || 'N/A';
-    windSpeedEl.textContent = data.details.windSpeed || 'N/A';
-    pressureEl.textContent = data.details.pressure || 'N/A';
+    // ✅ FIX: .trim() ensure no extra space or character is included
+    humidityEl.textContent = (data.details.humidity || 'N/A').trim();
+    windSpeedEl.textContent = (data.details.windSpeed || 'N/A').trim();
+    pressureEl.textContent = (data.details.pressure || 'N/A').trim();
     
     const aqiInfo = getAqiDescription(data.details.aqiIndex || 'N/A');
-    aqiIndexEl.textContent = data.details.aqiIndex || 'N/A';
-    aqiDescriptionEl.textContent = data.details.aqi || aqiInfo.description; // Use parsed AQI description first
+    aqiIndexEl.textContent = (data.details.aqiIndex || 'N/A').trim();
+    aqiDescriptionEl.textContent = (data.details.aqi || aqiInfo.description).trim(); // Use parsed AQI description first
     aqiDescriptionEl.className = `aqi-pill text-xs mt-1 p-0.5 rounded ${aqiInfo.classes}`;
     
-    uvIndexEl.textContent = data.details.uvIndex || 'N/A';
-    uvAdviceEl.textContent = getUVAdvice(data.details.uvIndex);
+    uvIndexEl.textContent = (data.details.uvIndex || 'N/A').trim();
+    uvAdviceEl.textContent = getUVAdvice(data.details.uvIndex).trim();
     
     displayForecast(hourlyForecastContainer, data.forecasts.hourly, true, data.temp.unit);
     displayForecast(dailyForecastContainer, data.forecasts.daily, false, data.temp.unit);
@@ -915,12 +952,22 @@ const parseWeatherReport = (text) => {
         forecasts: { hourly: [], daily: [] }
     };
     
-    // --- 1. City Matching (More flexible + Cleaning) ---
-    const cityMatch = text.match(/(?:weather in|for|in)\s+([A-Z][A-Za-z\s]+?)\s*(?:is|currently|weather|$|\.)/i);
-    if (cityMatch) {
-        data.city = cityMatch[1] || 'Location';
-        data.city = data.city.trim().replace(/[.,]$/g, '');
-        data.city = data.city.replace(/zila|Jila|District/gi, '').trim(); 
+    // --- 1. City Matching (Improved for Accuracy - FIX for N/A city name) ---
+    const cityMatch = text.match(/Weather\s*for\s*([A-Z][A-Za-z\s]+?)\s*(?:is|currently|\s*weather|$|\.)/i);
+
+    if (cityMatch && cityMatch[1]) {
+        let cityRaw = cityMatch[1];
+        
+        cityRaw = cityRaw.replace(/is\s*currently|currently|is|weather/i, '').trim();
+        cityRaw = cityRaw.replace(/[.,]$/g, ''); 
+        
+        data.city = cityRaw.replace(/zila|Jila|District/gi, '').trim(); 
+        
+        if (data.city === '') {
+            data.city = 'Location Unknown';
+        }
+    } else {
+        data.city = 'N/A';
     }
 
     // --- 2. Temperature Matching (Most robust for C or F) ---
@@ -953,14 +1000,21 @@ const parseWeatherReport = (text) => {
     }
     
     // --- 4. Details Matching (Handling missing spaces and commas) ---
-    const detailsRegex = /Details\s*:\s*Humidity\s*:\s*([^,]+?)\s*(?:,|\s*Wind)/i;
-    const windRegex = /Wind\s*speed\s*:\s*([^,]+?)\s*(?:,|\s*Pressure)/i;
-    const pressureRegex = /Pressure\s*:\s*([^,]+?)\s*(?:,|\s*UV)/i;
-    const uvRegex = /UV\s*Index\s*:\s*([^,]+?)\s*(?:,|\s*Air)/i;
+    // RegEx updated to be slightly more tolerant of formatting/markdown issues (though instructions should prevent them)
+    const detailsRegex = /Details\s*:\s*Humidity\s*:\s*([^*,]+?)\s*(?:%?)\s*(?:,|\s*Wind)/i;
+    const windRegex = /Wind\s*speed\s*:\s*([^*,]+?)\s*(?:km\/h)?\s*(?:,|\s*Pressure)/i;
+    const pressureRegex = /Pressure\s*:\s*([^*,]+?)\s*(?:hPa)?\s*(?:,|\s*UV)/i;
+    const uvRegex = /UV\s*Index\s*:\s*([^*,]+?)\s*(?:,|\s*Air)/i;
     const aqiRegex = /Air\s*Quality\s*:\s*([^.]+)/i; 
     
-    const getMatch = (regex) => text.match(regex)?.[1]?.trim().replace(/\[|\]|%|hPa|km\/h|\./g, '') || 'N/A';
+    // Utility function to match and clean data
+    const getMatch = (regex) => {
+        const match = text.match(regex);
+        if (!match || !match[1]) return 'N/A';
+        return match[1].trim().replace(/\[|\]|%|hPa|km\/h|\./g, '');
+    };
     
+    // Apply getMatch, trimming values to prevent ** issue (even though instructions forbid it)
     data.details.humidity = getMatch(detailsRegex);
     data.details.windSpeed = getMatch(windRegex);
     data.details.pressure = getMatch(pressureRegex);
@@ -969,11 +1023,9 @@ const parseWeatherReport = (text) => {
     // --- AQI Index & Description FIX ---
     const aqiFull = getMatch(aqiRegex);
     if (aqiFull !== 'N/A') {
-        // AQI Index in brackets (e.g., (105)) or just a number
         const indexMatch = aqiFull.match(/\((\s*\d+)\s*\)/) || aqiFull.match(/(\s*\d+)/);
         data.details.aqiIndex = indexMatch?.[1]?.trim() || 'N/A';
 
-        // AQI Description (e.g., Moderate, Unhealthy)
         const descMatch = aqiFull.match(/^([A-Za-z\s]+?)\s*(?:\()/) || aqiFull.match(/^([A-Za-z\s]+)/);
         data.details.aqi = descMatch?.[1]?.trim() || 'N/A';
     }
@@ -982,10 +1034,9 @@ const parseWeatherReport = (text) => {
         data.temp.feelsLike = data.temp.current; 
     }
     
-    // --- 5. Live Forecast Parsing (Updated to parse Gemini's output) ---
+    // --- 5. Live Forecast Parsing ---
     const parseForecast = (forecastType, textToParse) => {
         const results = [];
-        // RegEx to find the entire forecast line (e.g., "Hourly Forecast: [..],[..]")
         const sectionMatch = textToParse.match(new RegExp(`${forecastType}\\s*Forecast\\s*:\\s*(.*)`, 'i'));
         
         if (!sectionMatch) return results;
@@ -993,7 +1044,6 @@ const parseWeatherReport = (text) => {
         const forecastText = sectionMatch[1]; 
         
         // RegEx for Daily: [Day, Max, Min, Description]
-        // Allows for optional °C/°F after temps
         const dailyItemRegex = /\[([^\]]+?)\s*,\s*(\d+)\s*(?:°C|°F)?\s*,\s*(\d+)\s*(?:°C|°F)?\s*,\s*([^\]]+?)\]/gi; 
         
         // RegEx for Hourly: [Time, Temp, Description]
@@ -1021,11 +1071,8 @@ const parseWeatherReport = (text) => {
         return results;
     };
     
-    // Apply the new live forecast parsing
     data.forecasts.hourly = parseForecast('Hourly', text);
     data.forecasts.daily = parseForecast('Daily', text);
-    
-    // Original Mocking Logic removed successfully!
 
     if (data.temp.current === 'N/A' && data.city === 'N/A') return null;
     return data;
@@ -1069,59 +1116,78 @@ async function callChatApi(userQuery, history) {
 }
 
 const handleChatSubmit = async () => {
-    const userText = chatInput.value.trim();
-    if (userText === '') return;
-    clearWeatherUI(); 
-    // 1. Display user message and add to history
-    appendMessage(userText, 'user');
-    conversationHistory.push({ role: "user", parts: [{ text: userText }] }); 
+    const userText = chatInput.value.trim();
+    if (userText === '') return;
+    clearWeatherUI(); 
+    
+    // ✅ NEW FEATURE: Check for Chat Explanation Request 
+    const explainInChat = userText.toLowerCase().includes('explain') || 
+                          userText.toLowerCase().includes('yahin') ||
+                          userText.toLowerCase().includes('samjhao') ||
+                          userText.toLowerCase().includes('chat');
 
-    chatInput.value = '';
-    sendMessageButton.disabled = true;
-    if(micButton) micButton.disabled = true; 
-    chatInput.disabled = true;
-    
-    try {
-        // 3. Call API and wait for response 
-        const responseData = await callChatApi(userText, conversationHistory);
-        
-        const botText = responseData.botText || ''; 
-        const sources = responseData.sources || [];
+    // 1. Display user message and add to history
+    appendMessage(userText, 'user');
+    conversationHistory.push({ role: "user", parts: [{ text: userText }] }); 
 
-        // 4. Check for weather data (Now with highly robust parsing)
-        const weatherData = parseWeatherReport(botText); 
-        
-        let responseToDisplay = botText;
-        if (weatherData) {
-            responseToDisplay = "Mausam ki jaankari aur forecast uper dedicated weather card mein display ki gayi hai.";
-            
-            // Update the weather panel
-            currentWeatherData = weatherData; 
-            updateWeatherUI(weatherData); 
-            showMessage(`Weather report successfully parsed for ${weatherData.city}.`, false);
-        } else {
-            showMessage(``, false);
-        }
-        // 5. Display the final response
-        appendMessage(responseToDisplay, 'bot', sources); 
-        // 6. Bot's full response added to history
-        conversationHistory.push({ role: "model", parts: [{ text: botText }] });
-    }
-     catch (error) {
-        console.error("Chat Error:", error);
-        const errorMessage = `An error occurred: ${error.message}`;
-        appendMessage(errorMessage, 'bot');
-        speakBotResponse("Server se connect nahi ho pa raha. Kripya check karein ki Node.js server chal raha hai.", 'hi-IN');
-        // Remove the user message from history if API failed, so retrying works
-        conversationHistory.pop(); 
-    }
-     finally {
-        // 7. Reset UI state
-        sendMessageButton.disabled = false;
-        if(micButton) micButton.disabled = false; 
-        chatInput.disabled = false;
-        chatInput.focus();
-    }
+    chatInput.value = '';
+    sendMessageButton.disabled = true;
+    if(micButton) micButton.disabled = true; 
+    chatInput.disabled = true;
+    
+    try {
+        // 3. Call API and wait for response 
+        const responseData = await callChatApi(userText, conversationHistory);
+        
+        const botText = responseData.botText || ''; 
+        const sources = responseData.sources || [];
+
+        // 4. Check for weather data
+        const weatherData = parseWeatherReport(botText); 
+        
+        let responseToDisplay = botText;
+        
+        if (weatherData) {
+            
+            if (explainInChat) {
+                // CASE A: User asked for explanation in chat (Show full botText)
+                responseToDisplay = botText; // Gemini का पूरा, बिना-Markdown टेक्स्ट दिखाएँ
+                showMessage(`Weather report displayed in chat as requested.`, false);
+                // Weather Card को छिपा दें
+                currentWeatherData = weatherData; 
+                weatherContent.classList.add('hidden'); 
+            } else {
+                // CASE B: Normal weather request (Show weather in card and small message in chat)
+                responseToDisplay = "Mausam ki jaankari aur forecast uper dedicated weather card mein display ki gayi hai.";
+                // Update the weather panel
+                currentWeatherData = weatherData; 
+                updateWeatherUI(weatherData); 
+                showMessage(`Weather report successfully parsed for ${weatherData.city}.`, false);
+            }
+            
+        } else {
+            // CASE C: Not a weather query (Show full botText)
+            showMessage(``, false);
+        }
+        
+        // 5. Display the final response
+        appendMessage(responseToDisplay, 'bot', sources); 
+        // 6. Bot's full response added to history
+        conversationHistory.push({ role: "model", parts: [{ text: botText }] });
+    }
+     catch (error) {
+        console.error("Chat Error:", error);
+        const errorMessage = `An error occurred: ${error.message}`;
+        appendMessage(errorMessage, 'bot');
+        speakBotResponse("Server se connect nahi ho pa raha. Kripya check karein ki Node.js server chal raha hai.", 'hi-IN');
+        conversationHistory.pop(); 
+    }
+     finally {
+        sendMessageButton.disabled = false;
+        if(micButton) micButton.disabled = false; 
+        chatInput.disabled = false;
+        chatInput.focus();
+    }
 };
 
 
@@ -1129,7 +1195,6 @@ const handleChatSubmit = async () => {
 // === 7. Event Listeners and Initial Setup ===
 // ======================================================================
 
-// माइक बटन क्लिक लिसनर (Click-to-Talk Logic)
 if (micButton) {
     micButton.addEventListener('click', () => {
         if (isRecording) {
