@@ -1,8 +1,7 @@
 
 
-// // 💡 VITAL FIX: LOCALHOST URL को आपके लाइव Render URL से बदल दिया गया है
-// const CHAT_API_ENDPOINT='https://aibotinformation.onrender.com/api/chat'; 
-// // Note: मैंने यहाँ '/api/chat' को सीधे ENDPOINT में जोड़ दिया है
+// // ✅ FIX: URL से अनावश्यक स्पेस हटा दिया गया है
+// const CHAT_API_ENDPOINT = 'https://aibotinformation.onrender.com/api/chat'; 
 
 // // 💾 Global State & Memory
 // let conversationHistory = []; 
@@ -39,6 +38,7 @@
 // const micButton = document.getElementById('micButton');
 // const errorMsg = document.getElementById('errorMsg');
 
+
 // // ======================================================================
 // // === 2. VOICE RESPONSE (Text-to-Speech) ===
 // // ======================================================================
@@ -56,6 +56,7 @@
 //         }
 
 //         window.speechSynthesis.cancel();
+//         // अगर आप बॉट से बुलवाना चाहते हैं, तो नीचे वाली लाइन से '//' हटा दें
 //         // window.speechSynthesis.speak(utterance); 
 //     } else {
 //         console.warn("Speech Synthesis not supported in this browser.");
@@ -327,7 +328,7 @@
 //     chatWindow.scrollTop = chatWindow.scrollHeight;
 // };
 // // ======================================================================
-// // === VITAL FIX: IMPROVED WEATHER PARSING LOGIC (ROBUST VERSION) ===
+// // === 5. WEATHER PARSING LOGIC (ROBUST VERSION) ===
 // // ======================================================================
 // const parseWeatherReport = (text) => {
 //     const normalizedText = (text || '').toLowerCase(); 
@@ -355,7 +356,6 @@
 //     }
 
 //     // --- 2. Temperature Matching (Most robust for C or F) ---
-//     // Finds (Number) + (optional text) + (Unit: °C, C, °F, F)
 //     const tempRegex = /(\d+\.?\d*)\s*(?:degrees|temp)?\s*(°C|°F|C|F)/i;
 //     const tempMatch = text.match(tempRegex);
 
@@ -363,7 +363,6 @@
 //         data.temp.current = tempMatch[1];
 //         data.temp.unit = tempMatch[2].toUpperCase().includes('C') ? '°C' : '°F';
 //     } else {
-//         // Fallback for bare number if no unit is found
 //         const bareTempMatch = text.match(/(\d+)\s*(?:is|and)\s*([A-Za-z\s]+)/i); 
 //         if (bareTempMatch) {
 //             data.temp.current = bareTempMatch[1];
@@ -372,14 +371,11 @@
 //     }
 
 //     // --- 3. Description Matching (Flexible positions + Cleaning) ---
-//     // Finds conditions after 'is/are [Temp] and ' or 'currently [Conditions]'
 //     const descMatch = text.match(/and\s*([A-Za-z\s]+?)(?:\.|,|Details|\s*skies)/i) || 
 //                       text.match(/(?:conditions|is)\s*([A-Za-z\s]+?)\s*(?:skies|Detail|\.)/i);
 
 //     if (descMatch) {
 //         let descriptionRaw = (descMatch[1] || '').trim().replace(/[.,]$/g, '');
-//         // NEW FIX: विवरण (Description) से किसी भी हिंदी या क्षेत्रीय भाषा के शब्द को हटाएँ
-//         // यह सुनिश्चित करता है कि आइकन के लिए केवल अंग्रेजी शब्द रहें।
 //         descriptionRaw = descriptionRaw.replace(/साफ|बादल|बारिश|धूप|कोहरा|आसमान/g, '').trim();
 //         if (descriptionRaw === '' || descriptionRaw.toLowerCase() === 'skies') {
 //             data.description = 'N/A';
@@ -389,7 +385,6 @@
 //     }
 //     
 //     // --- 4. Details Matching (Handling missing spaces and commas) ---
-//     // RegEx is made more tolerant of variations in spacing and punctuation around separators ([,:])
 //     const detailsRegex = /Details\s*:\s*Humidity\s*:\s*([^,]+?)\s*(?:,|\s*Wind)/i;
 //     const windRegex = /Wind\s*speed\s*:\s*([^,]+?)\s*(?:,|\s*Pressure)/i;
 //     const pressureRegex = /Pressure\s*:\s*([^,]+?)\s*(?:,|\s*UV)/i;
@@ -428,8 +423,9 @@
 //     if (data.temp.current === 'N/A' && data.city === 'N/A') return null;
 //     return data;
 // };
+
 // // ======================================================================
-// // === 5. API Call Function ===
+// // === 6. API Call Function & Chat Handler ===
 // // ======================================================================
 // async function callChatApi(userQuery, history) {
 //     if (chatTypingIndicator) chatTypingIndicator.classList.remove('hidden');
@@ -449,9 +445,9 @@
 //             if (errorData.botText) {
 //                 errorDetails = errorData.botText; 
 //             } else if (response.status === 403 || response.status === 401) {
-//                 errorDetails = 'API Access Denied (Status 403/401). Please check the GEMINI_API_KEY.';
+//                 errorDetails = 'API Access Denied (Status 403/401). कृपया **GEMINI_API_KEY** की जाँच करें।';
 //             } else if (response.status === 500) {
-//                  errorDetails = 'Internal Server Error (Status 500). Check server logs.';
+//                  errorDetails = 'Internal Server Error (Status 500). Render server logs जाँच करें।';
 //             }
 //             throw new Error(`Connection Error: ${errorDetails}`);
 //         }
@@ -523,7 +519,7 @@
 
 
 // // ======================================================================
-// // === 6. Event Listeners and Initial Setup ===
+// // === 7. Event Listeners and Initial Setup ===
 // // ======================================================================
 
 // // माइक बटन क्लिक लिसनर (Click-to-Talk Logic)
@@ -572,19 +568,6 @@
 //         appendMessage(welcomeMessage, 'bot');
 //     }
 // };
-
-// ... (आपके बाकी वॉयस और DOM एलिमेंट्स)
-
-// ======================================================================
-// === 1. CONFIGURATION ===
-// ======================================================================
-
-// ✅ FIX: URL से अनावश्यक स्पेस हटा दिया गया है
-
-// ======================================================================
-// === 1. CONFIGURATION & GLOBAL STATE ===
-// ======================================================================
-
 // ✅ FIX: URL से अनावश्यक स्पेस हटा दिया गया है
 const CHAT_API_ENDPOINT = 'https://aibotinformation.onrender.com/api/chat'; 
 
@@ -828,7 +811,7 @@ const updateWeatherUI = (data) => {
     
     const aqiInfo = getAqiDescription(data.details.aqiIndex || 'N/A');
     aqiIndexEl.textContent = data.details.aqiIndex || 'N/A';
-    aqiDescriptionEl.textContent = aqiInfo.description;
+    aqiDescriptionEl.textContent = data.details.aqi || aqiInfo.description; // Use parsed AQI description first
     aqiDescriptionEl.className = `aqi-pill text-xs mt-1 p-0.5 rounded ${aqiInfo.classes}`;
     
     uvIndexEl.textContent = data.details.uvIndex || 'N/A';
@@ -975,36 +958,75 @@ const parseWeatherReport = (text) => {
     const pressureRegex = /Pressure\s*:\s*([^,]+?)\s*(?:,|\s*UV)/i;
     const uvRegex = /UV\s*Index\s*:\s*([^,]+?)\s*(?:,|\s*Air)/i;
     const aqiRegex = /Air\s*Quality\s*:\s*([^.]+)/i; 
+    
     const getMatch = (regex) => text.match(regex)?.[1]?.trim().replace(/\[|\]|%|hPa|km\/h|\./g, '') || 'N/A';
+    
     data.details.humidity = getMatch(detailsRegex);
     data.details.windSpeed = getMatch(windRegex);
     data.details.pressure = getMatch(pressureRegex);
     data.details.uvIndex = getMatch(uvRegex);
+    
+    // --- AQI Index & Description FIX ---
     const aqiFull = getMatch(aqiRegex);
     if (aqiFull !== 'N/A') {
-        data.details.aqi = aqiFull.match(/([A-Za-z\s]+)/)?.[1]?.trim() || aqiFull;
-        data.details.aqiIndex = aqiFull.match(/\((\d+)\)/)?.[1] || aqiFull.match(/AQI\s*(\d+)/i)?.[1] || aqiFull.match(/(\d+)/)?.[1] || 'N/A';
+        // AQI Index in brackets (e.g., (105)) or just a number
+        const indexMatch = aqiFull.match(/\((\s*\d+)\s*\)/) || aqiFull.match(/(\s*\d+)/);
+        data.details.aqiIndex = indexMatch?.[1]?.trim() || 'N/A';
+
+        // AQI Description (e.g., Moderate, Unhealthy)
+        const descMatch = aqiFull.match(/^([A-Za-z\s]+?)\s*(?:\()/) || aqiFull.match(/^([A-Za-z\s]+)/);
+        data.details.aqi = descMatch?.[1]?.trim() || 'N/A';
     }
+    
     if (data.temp.current !== 'N/A' && data.temp.feelsLike === 'N/A') {
         data.temp.feelsLike = data.temp.current; 
     }
-    // --- 5. Mock Forecast Data (Using Parsed Temp) ---
-    if (data.temp.current !== 'N/A' && !isNaN(parseFloat(data.temp.current))) {
-        const baseTemp = parseFloat(data.temp.current);
-        const desc = data.description !== 'N/A' ? data.description : 'clear sky';
+    
+    // --- 5. Live Forecast Parsing (Updated to parse Gemini's output) ---
+    const parseForecast = (forecastType, textToParse) => {
+        const results = [];
+        // RegEx to find the entire forecast line (e.g., "Hourly Forecast: [..],[..]")
+        const sectionMatch = textToParse.match(new RegExp(`${forecastType}\\s*Forecast\\s*:\\s*(.*)`, 'i'));
         
-        data.forecasts.hourly = [
-            { time: '3h', temp: baseTemp + 1, description: desc.includes('rain') ? 'partly cloudy' : desc },
-            { time: '6h', temp: baseTemp + 2, description: desc },
-            { time: '9h', temp: baseTemp + 1, description: desc.includes('rain') ? 'clear sky' : desc }
-        ].filter(item => !isNaN(item.temp));
+        if (!sectionMatch) return results;
 
-        data.forecasts.daily = [
-            { day: 'Mon', tempMax: baseTemp + 3, tempMin: baseTemp - 5, description: 'Partly Cloudy' },
-            { day: 'Tue', tempMax: baseTemp + 2, tempMin: baseTemp - 4, description: 'Clouds' },
-            { day: 'Wed', tempMax: baseTemp + 1, tempMin: baseTemp - 3, description: 'Rain' }
-        ].filter(item => !isNaN(item.tempMax));
-    }
+        const forecastText = sectionMatch[1]; 
+        
+        // RegEx for Daily: [Day, Max, Min, Description]
+        // Allows for optional °C/°F after temps
+        const dailyItemRegex = /\[([^\]]+?)\s*,\s*(\d+)\s*(?:°C|°F)?\s*,\s*(\d+)\s*(?:°C|°F)?\s*,\s*([^\]]+?)\]/gi; 
+        
+        // RegEx for Hourly: [Time, Temp, Description]
+        const hourlyItemRegex = /\[([^\]]+?)\s*,\s*(\d+)\s*(?:°C|°F)?\s*,\s*([^\]]+?)\]/gi;
+
+        let match;
+        if (forecastType.toLowerCase() === 'daily') {
+            while ((match = dailyItemRegex.exec(forecastText)) !== null) {
+                results.push({
+                    day: match[1].trim(),
+                    tempMax: parseFloat(match[2]),
+                    tempMin: parseFloat(match[3]),
+                    description: match[4].trim()
+                });
+            }
+        } else if (forecastType.toLowerCase() === 'hourly') {
+            while ((match = hourlyItemRegex.exec(forecastText)) !== null) {
+                results.push({
+                    time: match[1].trim(),
+                    temp: parseFloat(match[2]),
+                    description: match[3].trim().replace(/\[|\]/g, '')
+                });
+            }
+        }
+        return results;
+    };
+    
+    // Apply the new live forecast parsing
+    data.forecasts.hourly = parseForecast('Hourly', text);
+    data.forecasts.daily = parseForecast('Daily', text);
+    
+    // Original Mocking Logic removed successfully!
+
     if (data.temp.current === 'N/A' && data.city === 'N/A') return null;
     return data;
 };
