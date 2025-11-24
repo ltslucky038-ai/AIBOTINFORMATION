@@ -9,7 +9,13 @@ const { GoogleGenAI } = require('@google/genai');
 const PORT = process.env.PORT || 3000;
 const app = express();
 const GEMINI_MODEL = 'gemini-2.5-flash'; 
-
+// सर्वर-साइड (Server-side) कोड में यह जोड़ें
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://ltslucky038-ai.github.io');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,PUT');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 // API Key Environment Variable से ही लोड होगी
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
