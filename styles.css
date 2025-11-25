@@ -2,6 +2,7 @@
         
 html, body {
     width: 100%;
+    /* Full viewport height */
     height: 100vh; 
     margin: 0;
     padding: 0;
@@ -13,14 +14,13 @@ html, body {
 body {
     font-family: 'Inter', sans-serif;
     color: #e0e0e0;
+    /* Ensure body takes up full height and allows vertical scrolling */
     min-height: 100vh; 
     overflow-y: auto; 
     
-    /* REMOVED: display: flex, justify-content, align-items, 
-       सो दैट कंटेंट सामान्य रूप से सेंटर हो सके और स्क्रॉल ठीक से काम करे */
-    
+    /* Auto margins for content spacing */
     padding-top: 20px; 
-    /* Padding bottom ensures content scrolls above the fixed input bar */
+    /* CRITICAL: Padding bottom ensures content scrolls above the fixed input bar */
     padding-bottom: calc(1rem + 1rem + 48px + env(safe-area-inset-bottom, 0)); 
     
     transition: background-color 0.5s ease;
@@ -28,6 +28,7 @@ body {
     z-index: 1; 
 }
 
+/* Fixed Background and Blur Effect */
 body::before {
     content: '';
     position: fixed; 
@@ -45,12 +46,13 @@ body::before {
     z-index: -1; 
 }
 
+/* App Content Container Styling */
 .app-container {
     /* Auto margins for centering content on a block element */
     margin-left: auto;
     margin-right: auto;
     
-    /* Fixed Length: Content width */
+    /* Content width: Max-width is 40rem as requested for centering */
     max-width: 40rem; 
     width: 100%; 
     padding-left: 1rem; 
@@ -141,7 +143,7 @@ body::before {
     margin-bottom: 0.5rem;
 }
 
-/* FIXED SEARCH BAR STYLES */
+/* === FIXED SEARCH BAR STYLES === */
 #compactInputBar {
     /* Position fixed to prevent scrolling with body content */
     position: fixed;
@@ -151,10 +153,10 @@ body::before {
     max-width: 100rem; 
     width: 100%;
     
-    /* *** CRITICAL FOR CENTERING FIXED ELEMENT *** */
+    /* CRITICAL FOR CENTERING FIXED ELEMENT: */
     left: 50%;
     transform: translateX(-50%); 
-    
+
     padding: 1rem;
     padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0));
     background-color: rgba(10, 20, 30, 0.9);
@@ -172,7 +174,6 @@ body::before {
 #compactInputBar > div {
     /* Ensure the input area takes full available width within the fixed container's max-width */
     width: 100%;
-    /* No need for max-width here, as the parent handles it */
 }
 
 #chatInputCompact {
@@ -184,7 +185,7 @@ body::before {
 
 #micButtonCompact {
     position: absolute;
-    /* Adjusted right position */
+    /* Adjusted right position relative to the input field container */
     right: calc(1rem + 0.5rem); 
     top: 50%;
     transform: translateY(-50%);
