@@ -1,0 +1,164 @@
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+    
+    /* -------------------------------------------------- */
+    /* 🚀 HYPER-PREMIUM NEON-GLOW THEME CSS */
+    /* -------------------------------------------------- */
+
+    body {
+        font-family: 'Inter', sans-serif;
+        color: #e0e0e0;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        padding: 0; 
+        transition: background-color 0.5s ease;
+        background-size: cover; 
+        background-position: center; 
+        background-attachment: fixed;
+        position: relative;
+        z-index: 1; 
+    }
+
+    /* 🖼 BACKGROUND BLUR OVERLAY */
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        /* Ensure this URL is valid */
+        background-image: url('https://media.istockphoto.com/id/809971888/photo/night-sky-landscape.jpg?s=612x612&w=0&k=20&c=ku3RWu4DQ8ErN-KbT1Act72LMocTwSAAm3UDkLiako0='); 
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        backdrop-filter: blur(13.5px) brightness(70%);
+        -webkit-backdrop-filter: blur(13.5px) brightness(70%);
+        z-index: -1; 
+    }
+
+    /* Weather Card Styling */
+    .weather-card {
+        box-shadow: 
+            0 0 27px rgba(0, 200, 255, 0.6), 
+            0 0 54px rgba(0, 200, 255, 0.3), 
+            0 22.5px 45px rgba(0, 0, 0, 0.7); 
+        backdrop-filter: blur(31.5px) saturate(180%);
+        -webkit-backdrop-filter: blur(31.5px) saturate(180%);
+        border: 1px solid rgba(0, 220, 255, 0.8);
+        max-width: none;
+        width: 100%;
+        border-radius: 0; 
+        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        z-index: 2; 
+        min-height: 100vh;
+    }
+
+    .bg-gray-800, .bg-gray-700 {
+        background-color: rgba(10, 20, 30, 0.7) !important; 
+        border-color: rgba(0, 200, 255, 0.3); 
+    }
+    
+    /* Icons and Typography */
+    .weather-icon i {
+        width: 5.4rem;
+        height: 5.4rem;
+        color: rgba(255, 255, 0, 0.9) !important; 
+    }
+    .weather-icon {
+        line-height: 1;
+        text-shadow: 0 0 27px rgba(255, 255, 0, 1), 0 0 54px rgba(255, 255, 0, 0.6); 
+    }
+
+    /* 🟢 ALL MAIN TEXT COLOR OVERRIDES */
+    .weather-card h1, .weather-card h2, .weather-card h3, .weather-card p,
+    .weather-card .text-xl, .weather-card .text-2xl, .weather-card .text-5xl, .weather-card .text-7xl, 
+    .text-cyan-400, .text-cyan-200, .text-indigo-300, .text-gray-200, #chatResponse p, #chatResponse strong { 
+        color: rgba(0, 234, 255, 0.9) !important; 
+        text-shadow: 0 0 9px rgba(0, 255, 255, 0.5); 
+    }
+
+    /* Forecast Cards */
+    .hourly-forecast-container, .daily-forecast-container {
+        overflow-x: auto;
+        white-space: nowrap; 
+        padding-bottom: 0.45rem; 
+    }
+    .forecast-card, .daily-card {
+        display: inline-block;
+        margin-right: 0.675rem; 
+        flex-shrink: 0;
+        background-color: rgba(10, 20, 30, 0.1); 
+        border-radius: 0.675rem; 
+        border: 1px solid rgba(0, 200, 255, 0.2); 
+        transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        cursor: pointer;
+    }
+    .forecast-card:hover, .daily-card:hover {
+        transform: translateY(-9px); 
+        box-shadow: 0 0 22.5px rgba(0, 255, 255, 0.8), 0 0 36px rgba(0, 255, 255, 0.4); 
+    }
+    
+    /* AQI Pill Styling */
+    .aqi-pill {
+        padding: 0.225rem 0.675rem; 
+        border-radius: 9999px;
+        font-weight: bold;
+        font-size: 0.7875rem; 
+        text-shadow: 0.9px 0.9px 1.8px rgba(0,0,0,0.5); 
+    }
+
+    /* CHAT/RESPONSE SPECIFIC STYLING */
+    #chatResponse {
+        background-color: rgba(10, 20, 30, 0.8);
+        border: 1px solid rgba(0, 200, 255, 0.5);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    }
+
+    /* 💬 Compact Input Bar Styling */
+    #compactInputBar {
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 650px; /* Adjust this max-width as needed */
+        padding: 1rem;
+        background-color: rgba(10, 20, 30, 0.8);
+        z-index: 10;
+        box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.5);
+        border-top: 1px solid rgba(0, 220, 255, 0.8);
+    }
+
+    #compactInputBar input {
+        border-radius: 9999px !important; /* Fully rounded input */
+        background-color: #2d3748 !important; /* Darker input field */
+        border: 1px solid #4a5568 !important;
+        padding-right: 3rem; /* Space for mic button */
+    }
+
+    #micButtonCompact {
+        position: absolute;
+        right: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 11;
+        color: #a5f3fc; /* Cyan color */
+    }
+
+    #sendMessageButtonCompact {
+        background-color: #4f46e5; /* Indigo */
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.5rem;
+    }
