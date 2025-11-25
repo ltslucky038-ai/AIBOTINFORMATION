@@ -2,27 +2,25 @@
         
 html, body {
     width: 100%;
-    /* Full viewport height */
     height: 100vh; 
     margin: 0;
     padding: 0;
     box-sizing: border-box; 
     overflow-x: hidden; 
-    overflow-y: auto; 
     -webkit-overflow-scrolling: touch; 
 }
 
 body {
     font-family: 'Inter', sans-serif;
     color: #e0e0e0;
-    /* Full viewport height */
-    height: 100vh; 
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; 
+    min-height: 100vh; 
+    overflow-y: auto; 
+    
+    /* REMOVED: display: flex, justify-content, align-items, 
+       सो दैट कंटेंट सामान्य रूप से सेंटर हो सके और स्क्रॉल ठीक से काम करे */
     
     padding-top: 20px; 
-    /* IMPORTANT: Padding to make space for the fixed input bar at the bottom */
+    /* Padding bottom ensures content scrolls above the fixed input bar */
     padding-bottom: calc(1rem + 1rem + 48px + env(safe-area-inset-bottom, 0)); 
     
     transition: background-color 0.5s ease;
@@ -43,18 +41,22 @@ body::before {
     background-repeat: no-repeat;
     background-attachment: fixed;
     backdrop-filter: blur(13.5px) brightness(70%);
-    -webkit-backdrop-filter: blur(13.5px) brightness(70%);
+    -webkit-backdrop-filter: blur(13.5px) saturate(70%);
     z-index: -1; 
 }
 
 .app-container {
-    min-height: 100%; 
+    /* Auto margins for centering content on a block element */
+    margin-left: auto;
+    margin-right: auto;
+    
+    /* Fixed Length: Content width */
+    max-width: 40rem; 
     width: 100%; 
-    max-width: none; 
-    padding-bottom: 0; 
     padding-left: 1rem; 
     padding-right: 1rem; 
     padding-top: 1rem; 
+    padding-bottom: 0;
 } 
 
 .weather-card {
@@ -139,19 +141,38 @@ body::before {
     margin-bottom: 0.5rem;
 }
 
-/* Fixed Input Bar */
+/* FIXED SEARCH BAR STYLES */
 #compactInputBar {
+    /* Position fixed to prevent scrolling with body content */
     position: fixed;
     bottom: 0;
-    left: 0; 
-    width: 100%; 
-    max-width: none; 
+    
+    /* Fixed Length (40rem) as requested */
+    max-width: 100rem; 
+    width: 100%;
+    
+    /* *** CRITICAL FOR CENTERING FIXED ELEMENT *** */
+    left: 50%;
+    transform: translateX(-50%); 
+    
     padding: 1rem;
     padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0));
     background-color: rgba(10, 20, 30, 0.9);
     z-index: 10;
     box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.5);
     border-top: 1px solid rgba(0, 220, 255, 0.8);
+
+    /* Use flex to handle the inner content alignment (typing indicator/input field) */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Ensure inner content respects the padding and centers itself */
+#compactInputBar > div {
+    /* Ensure the input area takes full available width within the fixed container's max-width */
+    width: 100%;
+    /* No need for max-width here, as the parent handles it */
 }
 
 #chatInputCompact {
@@ -163,7 +184,8 @@ body::before {
 
 #micButtonCompact {
     position: absolute;
-    right: calc(1.5rem + 1rem); 
+    /* Adjusted right position */
+    right: calc(1rem + 0.5rem); 
     top: 50%;
     transform: translateY(-50%);
     z-index: 11;
