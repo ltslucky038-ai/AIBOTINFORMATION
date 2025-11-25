@@ -1,4 +1,4 @@
-
+<!-- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -256,6 +256,318 @@ body::before {
 
             <button id="sendMessageButtonCompact" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition duration-200 shadow-lg">
                     <i data-lucide="send" style="width: 20px; height: 20px;"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script> 
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>VISION AI ASSISTANT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        /* -------------------------------------------------- */
+        /* ✅ 1. FULL SCREEN FIT & BODY/HTML FIX */
+        /* -------------------------------------------------- */
+        html, body {
+            width: 100%;
+            /* Mobile Keyboard Fix: 100vh के बजाय 100% का उपयोग करें */
+            height: 100%; 
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box; 
+            overflow-x: hidden; 
+            /* कंटेंट लंबा होने पर स्क्रॉल करने दें */
+            overflow-y: auto; 
+            -webkit-overflow-scrolling: touch; 
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #e0e0e0;
+            height: 100%; 
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; 
+            
+            /* कंटेंट को ऊपर से मार्जिन दें */
+            padding-top: 20px; 
+            /* Search Bar Fixed है, इसलिए body पर नीचे कोई पैडिंग नहीं */
+            padding-bottom: 0; 
+            
+            transition: background-color 0.5s ease;
+            position: relative;
+            z-index: 1; 
+        }
+
+
+        /* BACKGROUND BLUR OVERLAY (सही है, पूरे स्क्रीन पर फिक्स्ड है) */
+        body::before {
+            content: '';
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://media.istockphoto.com/id/809971888/photo/night-sky-landscape.jpg?s=612x612&w=0&k=20&c=ku3RWu4DQ8ErN-KbT1Act72LMocTwSAAm3UDkLiako0='); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            backdrop-filter: blur(13.5px) brightness(70%);
+            -webkit-backdrop-filter: blur(13.5px) brightness(70%);
+            z-index: -1; 
+        }
+
+        /* -------------------------------------------------- */
+        /* ✅ 2. APP CONTAINER FIX (FULL WIDTH FOR DESKTOP) */
+        /* -------------------------------------------------- */
+        .app-container {
+            min-height: 100%; 
+            
+            /* ✅ Full Width */
+            width: 100%; 
+            /* ✅ Max Width हटा दी गई */
+            max-width: none; 
+            padding-bottom: 0; 
+            
+            /* कंटेंट को किनारों से थोड़ा गैप देने के लिए */
+           
+
+            padding-left: 1rem; /* 16px */
+             padding-right: 1rem; /* 16px */
+            padding-top: 1rem; /* 16px */
+        } 
+        
+        /* -------------------------------------------------- */
+        /* बाकी Weather/Chat Card Styles (कोई बदलाव नहीं) */
+        /* -------------------------------------------------- */
+        .weather-card {
+            box-shadow: 
+                0 0 27px rgba(0, 200, 255, 0.6), 
+                0 0 54px rgba(0, 200, 255, 0.3), 
+                0 22.5px 45px rgba(0, 0, 0, 0.7); 
+            backdrop-filter: blur(31.5px) saturate(180%);
+            -webkit-backdrop-filter: blur(31.5px) saturate(180%);
+            border: 1px solid rgba(0, 220, 255, 0.8);
+            max-width: none;
+            width: 100%;
+            border-radius: 0; 
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 2; 
+        }
+
+        .bg-gray-800, .bg-gray-700 {
+            background-color: rgba(10, 20, 30, 0.7) !important; 
+            border-color: rgba(0, 200, 255, 0.3); 
+        }
+        
+        .weather-icon i {
+            width: 5.4rem;
+            height: 5.4rem;
+            color: rgba(255, 255, 0, 0.9) !important; 
+        }
+        .weather-icon {
+            line-height: 1;
+            text-shadow: 0 0 27px rgba(255, 255, 0, 1), 0 0 54px rgba(255, 255, 0, 0.6); 
+        }
+
+        .weather-card h1, .weather-card h2, .weather-card h3, .weather-card p,
+        .weather-card .text-xl, .weather-card .text-2xl, .weather-card .text-5xl, .weather-card .text-7xl, 
+        .text-cyan-400, .text-cyan-200, .text-indigo-300, .text-gray-200, #chatResponse p, #chatResponse strong { 
+            color: rgba(0, 234, 255, 0.9) !important; 
+            text-shadow: 0 0 9px rgba(0, 255, 255, 0.5); 
+        }
+        
+        .hourly-forecast-container, .daily-forecast-container {
+            overflow-x: auto;
+            white-space: nowrap; 
+            padding-bottom: 0.45rem; 
+        }
+        .forecast-card, .daily-card {
+            display: inline-block;
+            margin-right: 0.675rem; 
+            flex-shrink: 0;
+            background-color: rgba(10, 20, 30, 0.1); 
+            border-radius: 0.675rem; 
+            border: 1px solid rgba(9, 73, 91, 0.2); 
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+        .forecast-card:hover, .daily-card:hover {
+            transform: translateY(-9px); 
+            box-shadow: 0 0 22.5px rgba(3, 252, 252, 0.8), 0 0 36px rgba(0, 255, 255, 0.4); 
+        }
+        
+        .aqi-pill {
+            padding: 0.225rem 0.675rem; 
+            border-radius: 9999px;
+            font-weight: bold;
+            font-size: 0.7875rem; 
+            text-shadow: 0.9px 0.9px 1.8px rgba(0,0,0,0.5); 
+        }
+
+        #chatResponse {
+            background-color: rgba(10, 20, 30, 0.8);
+            border: 1px solid rgba(0, 200, 255, 0.5);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+        }
+
+        #chatTypingIndicatorCompact {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* -------------------------------------------------- */
+        /* ✅ 3. SEARCH BAR FIX (Fixed, Full Width, Mobile Fit) */
+        /* -------------------------------------------------- */
+        #compactInputBar {
+            position: fixed;
+            bottom: 0;
+            left: 0; /* ✅ पूरे बॉडी पर फिट करने के लिए left: 0 */
+            
+            /* ✅ width: 100% ताकि यह पूरी चौड़ाई ले */
+            width: 100%; 
+            
+            /* ✅ max-width हटा दें, क्योंकि हमें फुल चौड़ाई चाहिए */
+            max-width: none; 
+            
+            padding: 1rem;
+            /* ✅ Mobile Keyboard Fix: bottom padding में safe area जोड़ें */
+            padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0));
+            
+            background-color: rgba(10, 20, 30, 0.9);
+            z-index: 10;
+            box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(0, 220, 255, 0.8);
+        }
+
+        #chatInputCompact {
+            border-radius: 9999px !important; 
+            background-color: #2d3748 !important; 
+            border: 1px solid #4a5568 !important;
+            padding-right: 3rem; 
+        }
+
+        #micButtonCompact {
+            position: absolute;
+            /* right को padding-right के बराबर सेट करें */
+            right: calc(1.5rem + 1rem); 
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 11;
+            color: #a5f3fc; 
+        }
+        .mic-active {
+             /* माइक एक्टिव होने पर रंग बदलें */
+             color: #ef4444 !important; 
+        }
+
+        #sendMessageButtonCompact {
+            background-color: #4f46e5; 
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <div id="appContainer" class="p-4 sm:p-6 lg:p-8 weather-card app-container max-w-4xl mx-auto">
+        
+        <header class="mb-8">
+            <h1 class="text-4xl font-extrabold text-center mb-2">VISION AI ASSISTANT 🤖</h1>
+            <p id="currentDate" class="text-center text-lg font-light text-gray-400"></p>
+            <p id="currentTime" class="text-center text-sm font-light text-gray-500 mb-6"></p>
+
+            <p id="errorMsg" class="text-center text-red-400 mt-3 hidden"></p>
+        </header>
+        
+        <div id="chatResponse" class="hidden mb-8">
+             <h2 class="text-xl font-bold mb-2 text-indigo-300 flex items-center"><i data-lucide="user" class="mr-2"></i> Your Query</h2>
+             <p id="userMessagePlaceholder" class="text-lg mb-4 ml-8 text-gray-200"></p>
+             <hr class="border-indigo-600 mb-4"/>
+             <h2 class="text-xl font-bold mb-2 text-cyan-400 flex items-center"><i data-lucide="message-square" class="mr-2"></i> Bot Response</h2>
+             <p id="botResponsePlaceholder" class="text-lg ml-8"></p>
+        </div>
+        
+        <div id="weatherContent" class="hidden">
+            <h2 class="text-3xl font-bold text-center mb-6 text-cyan-400">Weather Report for <span id="cityName"></span></h2>
+            
+            <section class="bg-gray-800 p-6 rounded-2xl shadow-xl flex flex-col sm:flex-row items-center justify-between mb-8 border border-cyan-500">
+                <div class="text-center sm:text-left mb-4 sm:mb-0">
+                    <p id="description" class="text-xl font-light capitalize text-cyan-200">...</p>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <div id="weatherIcon" class="weather-icon text-7xl">
+                         </div>
+                    <div>
+                        <p id="temperature" class="text-7xl font-light leading-none">...</p>
+                        <p class="text-lg text-gray-400 mt-1">Feels like <span id="feelsLike">...</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <h3 class="text-2xl font-semibold mb-4 text-cyan-400">Hourly Forecast</h3>
+            <div id="hourlyForecastContainer" class="hourly-forecast-container flex space-x-3 mb-8 pb-3 justify-center">
+                <p id="hourlyPlaceholder" class="text-gray-500">Data not available yet.</p>
+            </div>
+
+            <section class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                <div class="p-4 bg-gray-800 rounded-xl border border-cyan-700 shadow-md"><p class="text-lg font-medium text-cyan-300 flex items-center"><i data-lucide="droplets" class="mr-2"></i>Humidity</p><p id="humidity" class="text-2xl font-bold mt-1">...</p></div>
+                <div class="p-4 bg-gray-800 rounded-xl border border-cyan-700 shadow-md"><p class="text-lg font-medium text-cyan-300 flex items-center"><i data-lucide="wind" class="mr-2"></i>Wind Speed</p><p id="windSpeed" class="text-2xl font-bold mt-1">...</p></div>
+                <div class="p-4 bg-gray-800 rounded-xl border border-cyan-700 shadow-md"><p class="text-lg font-medium text-cyan-300 flex items-center"><i data-lucide="gauge" class="mr-2"></i>Pressure</p><p id="pressure" class="text-2xl font-bold mt-1">...</p></div>
+                <div class="p-4 bg-gray-800 rounded-xl border border-cyan-700 shadow-md"><p class="text-lg font-medium text-cyan-300 flex items-center"><i data-lucide="feather" class="mr-2"></i>Air Quality Index</p><div class="flex items-baseline space-x-2 mt-1"><p id="aqiIndex" class="text-2xl font-bold">...</p><span id="aqiDescription" class="aqi-pill bg-gray-500 text-white">...</span></div></div>
+                <div class="p-4 bg-gray-800 rounded-xl border border-cyan-700 shadow-md col-span-2 md:col-span-1"><p class="text-lg font-medium text-cyan-300 flex items-center"><i data-lucide="sun" class="mr-2"></i>UV Index</p><p id="uvIndex" class="text-2xl font-bold mt-1">...</p><p id="uvAdvice" class="text-sm text-gray-400 mt-1"></p></div>
+            </section>
+            
+            <h3 class="text-2xl font-semibold mb-4 text-cyan-400">5-Day Forecast</h3>
+            <div id="dailyForecastContainer" class="daily-forecast-container flex space-x-3 mb-8 pb-3 justify-center">
+                <p id="dailyPlaceholder" class="text-gray-500">Data not available yet.</p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div id="compactInputBar">
+        <div id="chatTypingIndicatorCompact" class="flex justify-start px-2 py-1 hidden">
+            <div class="flex items-center space-x-1.5 bg-gray-700 p-2 rounded-xl text-xs text-gray-300">
+                <div class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" style="animation-delay: 0s;"></div>
+                <div class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                <div class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+                <span class="ml-1">Bot is typing...</span>
+            </div> 
+        </div>
+
+        <div class="flex items-center relative">
+            <input type="text" id="chatInputCompact" placeholder="Ask me anything..."
+                         class="flex-grow p-3 text-sm rounded-full bg-gray-900 text-white border border-gray-600 focus:outline-none focus:border-indigo-500"
+                         aria-label="Chatbot input message">
+            
+            <button id="micButtonCompact" 
+                         class="absolute text-white transition duration-200" 
+                         aria-label="Start voice input">
+                     <i data-lucide="mic" style="width: 20px; height: 20px;"></i>
+                 </button>
+
+            <button id="sendMessageButtonCompact" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition duration-200 shadow-lg">
+                     <i data-lucide="send" style="width: 20px; height: 20px;"></i>
             </button>
         </div>
     </div>
