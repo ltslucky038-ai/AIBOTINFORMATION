@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -153,7 +153,7 @@
             <p id="currentTime" class="text-center text-sm font-light text-gray-500 mb-6"></p>
 
             <p id="errorMsg" class="text-center text-red-400 mt-3 hidden"></p>
-            <!-- <p id="apiNotice" class="text-center text-green-500 mt-3 text-sm">✅ API key is securely managed by Node.js server.</p> -->
+            
             
              <div class="flex justify-center mt-4">
                 
@@ -207,8 +207,7 @@
                 <i data-lucide="message-square" class="mr-2"></i> Chat Assistant
             </h2>
             
-            <!-- <div id="chatWindow" class="h-64 overflow-y-auto p-3 mb-4 rounded-lg bg-gray-900 border border-gray-700 space-y-3 chat-container">
-                </div> -->
+            
              <div id="chatWindow" class="h-80 w-full overflow-y-auto p-3 mb-4 rounded-lg bg-gray-900 border border-gray-700 space-y-3 chat-container"></div>
             <div id="chatTypingIndicator" class="flex justify-start px-2 py-1 hidden">
                 <div class="flex items-center space-x-1.5 bg-gray-700 p-2 rounded-xl text-xs text-gray-300">
@@ -237,4 +236,286 @@
 
     <script src="script.js"></script> 
 </body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VISION AI ASSISTANT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* -------------------------------------------------- */
+        /* 🚀 HYPER-PREMIUM NEON-GLOW THEME CSS & FULL-SCREEN LAYOUT FIX */
+        /* -------------------------------------------------- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden; /* Prevent body scroll for app-like experience */
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0; 
+            transition: background-color 0.5s ease;
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed;
+            position: relative;
+            z-index: 1; 
+        }
+
+        /* 🖼 BACKGROUND BLUR OVERLAY */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://media.istockphoto.com/id/809971888/photo/night-sky-landscape.jpg?s=612x612&w=0&k=20&c=ku3RWu4DQ8ErN-KbT1Act72LMocTwSAAm3UDkLiako0='); 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            backdrop-filter: blur(13.5px) brightness(70%);
+            -webkit-backdrop-filter: blur(13.5px) brightness(70%);
+            z-index: -1; 
+        }
+
+        /* 🆕 NEW APP CONTAINER (FULL SCREEN) */
+        #appContainer {
+            height: 100vh; /* Full viewport height */
+            width: 100%;
+            max-width: 100%;
+            padding: 0; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: rgba(10, 20, 30, 0.85); /* Slightly darker, almost opaque base */
+            border: none;
+            box-shadow: none;
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            z-index: 2; 
+        }
+        
+        /* 🆕 NEW CONTENT AREA (SCROLLABLE, FLEXIBLE) */
+        #contentArea {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 0;
+            scrollbar-width: thin;
+            scrollbar-color: rgb(20, 217, 217) transparent;
+        }
+        #contentArea::-webkit-scrollbar {
+            width: 8px;
+        }
+        #contentArea::-webkit-scrollbar-thumb {
+            background-color: rgb(20, 217, 217);
+            border-radius: 4px;
+        }
+        #contentArea::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        /* 🆕 NEW INPUT BAR (FIXED BOTTOM) */
+        #inputBar {
+            flex-shrink: 0;
+            padding: 10px 20px 20px 20px;
+            background-color: rgba(10, 20, 30, 0.9); 
+            border-top: 1px solid rgba(0, 220, 255, 0.3);
+        }
+
+        .bg-gray-800, .bg-gray-700 {
+            background-color: rgba(10, 20, 30, 0.7) !important; 
+            border-color: rgba(0, 200, 255, 0.3); 
+        }
+        
+        /* Icons and Typography */
+        .weather-icon i {
+            width: 5.4rem;
+            height: 5.4rem;
+            color: rgba(255, 255, 0, 0.9) !important; 
+        }
+        .weather-icon {
+            line-height: 1;
+            text-shadow: 0 0 27px rgba(255, 255, 0, 1), 0 0 54px rgba(255, 255, 0, 0.6); 
+        }
+
+        /* 🟢 ALL MAIN TEXT COLOR OVERRIDES */
+        .weather-card h1, .weather-card h2, .weather-card h3, .weather-card p,
+        .weather-card .text-xl, .weather-card .text-2xl, .weather-card .text-5xl, .weather-card .text-7xl, 
+        .text-cyan-400, .text-cyan-200, .text-indigo-300, .text-gray-200, #appHeader h1 { 
+            color: rgba(0, 234, 255, 0.9) !important; 
+            text-shadow: 0 0 9px rgba(0, 255, 255, 0.5); 
+        }
+
+        /* Forecast Cards (No change) */
+        .hourly-forecast-container, .daily-forecast-container {
+            overflow-x: auto;
+            white-space: nowrap; 
+            padding-bottom: 0.45rem; 
+        }
+        .forecast-card, .daily-card {
+            display: inline-block;
+            margin-right: 0.675rem; 
+            flex-shrink: 0;
+            background-color: rgba(10, 20, 30, 0.1); 
+            border-radius: 0.675rem; 
+            border: 1px solid rgba(0, 200, 255, 0.2); 
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
+        .forecast-card:hover, .daily-card:hover {
+            transform: translateY(-9px); 
+            box-shadow: 0 0 22.5px rgba(0, 255, 255, 0.8), 0 0 36px rgba(0, 255, 255, 0.4); 
+        }
+        
+        /* AQI Pill Styling (No change) */
+        .aqi-pill {
+            padding: 0.225rem 0.675rem; 
+            border-radius: 9999px;
+            font-weight: bold;
+            font-size: 0.7875rem; 
+            text-shadow: 0.9px 0.9px 1.8px rgba(0,0,0,0.5); 
+        }
+
+        /* CHATBOT SPECIFIC STYLING */
+        .bot-message-bubble-custom {
+            background-color: #102a43; 
+            color: #a5f3fc; 
+            border-radius: 1.25rem 1.25rem 1.25rem 0.5rem; 
+            box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+        }
+
+        .user-message-bubble-custom {
+            background-color: #4f46e5; /* Indigo */
+            color: white;
+            border-radius: 1.25rem 1.25rem 0.5rem 1.25rem; 
+            box-shadow: 0 0 5px rgba(79, 70, 229, 0.5);
+        }
+
+        .bot-message-bubble-custom strong {
+            color: #fff; 
+            text-shadow: 0 0 2px #fff;
+        }
+
+        /* 💥 FIX 1: CHAT WINDOW FULL SCREEN STYLES */
+        #chatWindow {
+            /* Remove fixed padding, use padding from #contentArea/itself */
+            /* Add transparency */
+            background-color: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            
+            /* Ensure it fills the flex space */
+            flex-grow: 1; 
+            height: 100%; /* Important for inner scrollability */
+        }
+
+        /* 💥 FIX 2: Ensure chatInterface fully fills the content area */
+        #chatInterface {
+            padding: 20px !important; /* Re-add padding that was removed from contentArea's default */
+            padding-bottom: 0 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="appContainer" class="weather-card">
+        
+        <header id="appHeader" class="p-4 pt-6 pb-2 flex-shrink-0 border-b border-cyan-700">
+            <h1 class="text-3xl font-extrabold text-center mb-1">VISION AI 🤖</h1>
+            <p id="currentDate" class="text-center text-md font-light text-gray-400"></p>
+            <p id="currentTime" class="text-center text-sm font-light text-gray-500 mb-0"></p>
+            <p id="errorMsg" class="text-center text-red-400 mt-2 hidden"></p>
+        </header>
+
+        <div id="contentArea" class="flex flex-col p-0"> 
+            
+            <div id="weatherContent" class="hidden flex-grow flex-shrink-0 p-4 pt-0">
+                <div class="flex justify-end mt-4 mb-4">
+                    <button id="unitToggle"
+                            class="bg-pink-600 hover:bg-pink-700 text-white font-bold p-2 rounded-full shadow-lg transition duration-300"
+                            aria-label="Toggle temperature unit (Celsius/Fahrenheit)">
+                        Switch to °F
+                    </button>
+                </div>
+                
+                <h2 id="weatherHeader" class="text-3xl font-bold text-center mb-6 text-cyan-400"></h2>
+                
+                <section class="bg-gray-800 p-6 rounded-2xl shadow-xl flex flex-col sm:flex-row items-center justify-between mb-6 border border-cyan-500">
+                    <div class="text-center sm:text-left mb-4 sm:mb-0">
+                        <p id="description" class="text-xl font-light capitalize text-cyan-200">...</p>
+                    </div>
+                    <div class="flex items-center space-x-6">
+                        <div id="weatherIcon" class="weather-icon text-7xl"></div>
+                        <div>
+                            <p id="temperature" class="text-7xl font-light leading-none">...</p>
+                            <p class="text-lg text-gray-400 mt-1">Feels like <span id="feelsLike">...</span></p>
+                        </div>
+                    </div>
+                </section>
+                
+                <h3 class="text-2xl font-semibold mb-3 text-cyan-400">Hourly Forecast</h3>
+                <div id="hourlyForecastContainer" class="hourly-forecast-container flex space-x-3 mb-6 pb-3 justify-center">
+                    <p id="hourlyPlaceholder" class="text-gray-500">Data not available yet.</p>
+                </div>
+                
+                <section class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                    <div class="p-4 bg-gray-800 rounded-xl border border-cyan-700 shadow-md"><p class="text-lg font-medium text-cyan-300 flex items-center"><i data-lucide="droplets" class="mr-2"></i>Humidity</p><p id="humidity" class="text-2xl font-bold mt-1">...</p></div>
+                    <div class="p-4 bg-gray-800 rounded-xl border border-cyan-700 shadow-md"><p class="text-lg font-medium text-cyan-300 flex items-center"><i data-lucide="wind" class="mr-2"></i>Wind Speed</p><p id="windSpeed" class="text-2xl font-bold mt-1">...</p></div>
+                    <div class="p-4 bg-gray-800 rounded-xl border border-cyan-700 shadow-md"><p class="text-lg font-medium text-cyan-300 flex items-center"><i data-lucide="gauge" class="mr-2"></i>Pressure</p><p id="pressure" class="text-2xl font-bold mt-1">...</p></div>
+                    <div class="p-4 bg-gray-800 rounded-xl border border-cyan-700 shadow-md"><p class="text-lg font-medium text-cyan-300 flex items-center"><i data-lucide="feather" class="mr-2"></i>Air Quality Index</p><div class="flex items-baseline space-x-2 mt-1"><p id="aqiIndex" class="text-2xl font-bold">...</p><span id="aqiDescription" class="aqi-pill bg-gray-500 text-white">...</span></div></div>
+                    <div class="p-4 bg-gray-800 rounded-xl border border-cyan-700 shadow-md col-span-2 md:col-span-1"><p class="text-lg font-medium text-cyan-300 flex items-center"><i data-lucide="sun" class="mr-2"></i>UV Index</p><p id="uvIndex" class="text-2xl font-bold mt-1">...</p><p id="uvAdvice" class="text-sm text-gray-400 mt-1"></p></div>
+                </section>
+                
+                <h3 class="text-2xl font-semibold mb-3 text-cyan-400">5-Day Forecast</h3>
+                <div id="dailyForecastContainer" class="daily-forecast-container flex space-x-3 pb-3 justify-center">
+                    <p id="dailyPlaceholder" class="text-gray-500">Data not available yet.</p>
+                </div>
+            </div> <div id="chatInterface" class="flex flex-col flex-grow p-4 pt-0">
+                <div id="chatWindow" class="w-full overflow-y-auto space-y-3 chat-container flex-grow"></div>
+                
+                <div id="chatTypingIndicator" class="flex justify-start px-2 py-1 hidden flex-shrink-0">
+                    <div class="flex items-center space-x-1.5 bg-gray-700 p-2 rounded-xl text-xs text-gray-300">
+                        <div class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" style="animation-delay: 0s;"></div>
+                        <div class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                        <div class="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+                        <span class="ml-1">Bot is typing...</span>
+                    </div>
+                </div>
+            </div> </div> <div id="inputBar" class="flex flex-shrink-0">
+            <input type="text" id="chatInput" placeholder="Aap kya jaanna chahte hain?"
+                   class="flex-grow p-3 rounded-l-lg bg-gray-900 text-white border border-gray-600 focus:outline-none focus:border-indigo-500"
+                   aria-label="Chatbot input message">
+            <button id="micButton" 
+                    class="text-white font-bold p-3 transition duration-200" 
+                    aria-label="Start voice input">
+                <i data-lucide="mic" style="width: 24px; height: 24px;"></i>
+            </button>
+            <button id="sendMessageButton" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-5 rounded-r-lg transition duration-200">
+                Bhejo
+            </button>
+        </div> </div>
+
+    <script>
+        // Place the content of script.js here
+    </script>
+</body>
 </html> 
+

@@ -99,10 +99,6 @@ Daily Forecast: [Tue, 32°C, 25°C, Sunny], [Wed, 31°C, 24°C, Cloudy], [Thu, 3
 ---
 **III. Instruction for LIVE News Data (News Bot Feature):**
 When a user explicitly asks for **current news** (e.g., "aaj ki khabar," "latest news," "top headlines"), you **MUST** use the Google Search tool. Summarize the **top 3-5 relevant and recent headlines** conversationally in Hindi/Hinglish. Present the information clearly and concisely.
-
----
-**IV. User Location Query (Limitation Handling):**
-When a user asks for their **current location** (e.g., "me abhi kha hu," "where am I"), you **MUST** politely explain in Hindi/Hinglish that you cannot access their **precise, personal GPS coordinates** or location due to **privacy and technical reasons**. However, you **MUST** offer to help them with location-based queries (like weather or nearby information) if they voluntarily provide their city or area name.
 `;
 // --- 3. SYSTEM INSTRUCTION (जैसा आपने दिया है) ---
 //---------------------------------------------
