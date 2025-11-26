@@ -1,24 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        
+
+/* === ग्लोबल रिसेट और मुख्य लेआउट === */
 html, body {
     width: 100%;
-    /* Full viewport height */
+    /* Full viewport height for initial sizing */
     height: 100vh; 
     margin: 0;
     padding: 0;
     box-sizing: border-box; 
+    /* Allow horizontal content scroll if necessary, but keep main body restricted */
     overflow-x: hidden; 
     -webkit-overflow-scrolling: touch; 
 }
 
 body {
     font-family: 'Inter', sans-serif;
-    color: #e0e0e0;
+    /* CRITICAL: Text color changed to pure white */
+    color: #ffffff; 
     /* Ensure body takes up full height and allows vertical scrolling */
     min-height: 100vh; 
+    /* CRITICAL: Enable vertical scrolling for the whole body/content */
     overflow-y: auto; 
     
-    /* Auto margins for content spacing */
     padding-top: 20px; 
     /* CRITICAL: Padding bottom ensures content scrolls above the fixed input bar */
     padding-bottom: calc(1rem + 1rem + 48px + env(safe-area-inset-bottom, 0)); 
@@ -28,7 +31,7 @@ body {
     z-index: 1; 
 }
 
-/* Fixed Background and Blur Effect */
+/* === फिक्स्ड बैकग्राउंड और ब्लर इफ़ेक्ट (हटाया गया / काला किया गया) === */
 body::before {
     content: '';
     position: fixed; 
@@ -36,17 +39,15 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('https://media.istockphoto.com/id/809971888/photo/night-sky-landscape.jpg?s=612x612&w=0&k=20&c=ku3RWu4DQ8ErN-KbT1Act72LMocTwSAAm3UDkLiako0='); 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    backdrop-filter: blur(13.5px) brightness(70%);
-    -webkit-backdrop-filter: blur(13.5px) saturate(70%);
+    /* CRITICAL: Background color changed to pure black, image and blur removed for premium, minimalist look */
+    background-color: #000000; 
+    background-image: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     z-index: -1; 
 }
 
-/* App Content Container Styling */
+/* === ऐप कंटेंट कंटेनर स्टाइलिंग === */
 .app-container {
     /* Auto margins for centering content on a block element */
     margin-left: auto;
@@ -61,42 +62,50 @@ body::before {
     padding-bottom: 0;
 } 
 
+/* === वेदर कार्ड और संबंधित स्टाइल्स (प्रीमियम व्हाइट टेक्स्ट, मिनिमल शैडो) === */
 .weather-card {
+    /* Box shadow adjusted for a cleaner, subtle premium glow on black */
     box-shadow: 
-        0 0 27px rgba(0, 200, 255, 0.6), 
-        0 0 54px rgba(0, 200, 255, 0.3), 
-        0 22.5px 45px rgba(0, 0, 0, 0.7); 
-    backdrop-filter: blur(31.5px) saturate(180%);
-    -webkit-backdrop-filter: blur(31.5px) saturate(180%);
-    border: 1px solid rgba(0, 220, 255, 0.8);
+        0 0 15px rgba(255, 255, 255, 0.1), 
+        0 0 30px rgba(255, 255, 255, 0.05); 
+    /* Minimalist glass effect: subtle blur, less saturation */
+    backdrop-filter: blur(10px) saturate(100%);
+    -webkit-backdrop-filter: blur(10px) saturate(100%);
+    /* Subtle white border */
+    border: 1px solid rgba(255, 255, 255, 0.1);
     max-width: none;
     width: 100%;
-    border-radius: 0; 
+    border-radius: 0.5rem; /* Rounded corners for premium feel */
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     z-index: 2; 
 }
 
+/* CRITICAL: Background colors changed to a very dark, slightly transparent black */
 .bg-gray-800, .bg-gray-700 {
-    background-color: rgba(10, 20, 30, 0.7) !important; 
-    border-color: rgba(0, 200, 255, 0.3); 
+    background-color: rgba(10, 10, 10, 0.8) !important; 
+    border-color: rgba(255, 255, 255, 0.1); 
 }
 
+/* Icons and Text: Pure white/subtle glow for premium look */
 .weather-icon i {
     width: 5.4rem;
     height: 5.4rem;
-    color: rgba(255, 255, 0, 0.9) !important; 
+    /* Weather icon color changed to bright white/yellow for contrast */
+    color: rgba(255, 255, 255, 0.9) !important; 
 }
 
 .weather-icon {
     line-height: 1;
-    text-shadow: 0 0 27px rgba(255, 255, 0, 1), 0 0 54px rgba(255, 255, 0, 0.6); 
+    /* Subtle white text shadow */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(255, 255, 255, 0.3); 
 }
 
 .weather-card h1, .weather-card h2, .weather-card h3, .weather-card p,
 .weather-card .text-xl, .weather-card .text-2xl, .weather-card .text-5xl, .weather-card .text-7xl, 
 .text-cyan-400, .text-cyan-200, .text-indigo-300, .text-gray-200, #chatResponse p, #chatResponse strong { 
-    color: rgba(0, 234, 255, 0.9) !important; 
-    text-shadow: 0 0 9px rgba(0, 255, 255, 0.5); 
+    /* CRITICAL: All text colors changed to pure white */
+    color: #ffffff !important; 
+    text-shadow: none; /* Removed colored text-shadow for a cleaner look */
 }
 
 .hourly-forecast-container, .daily-forecast-container {
@@ -109,16 +118,18 @@ body::before {
     display: inline-block;
     margin-right: 0.675rem; 
     flex-shrink: 0;
-    background-color: rgba(10, 20, 30, 0.1); 
+    /* Forecast card background: very dark, subtle transparent black */
+    background-color: rgba(10, 10, 10, 0.5); 
     border-radius: 0.675rem; 
-    border: 1px solid rgba(9, 73, 91, 0.2); 
+    border: 1px solid rgba(255, 255, 255, 0.1); 
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     cursor: pointer;
 }
 
 .forecast-card:hover, .daily-card:hover {
-    transform: translateY(-9px); 
-    box-shadow: 0 0 22.5px rgba(3, 252, 252, 0.8), 0 0 36px rgba(0, 255, 255, 0.4); 
+    transform: translateY(-5px); /* Less aggressive lift */
+    /* Subtle white glow on hover */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 0 0 25px rgba(255, 255, 255, 0.2); 
 }
 
 .aqi-pill {
@@ -126,16 +137,25 @@ body::before {
     border-radius: 9999px;
     font-weight: bold;
     font-size: 0.7875rem; 
-    text-shadow: 0.9px 0.9px 1.8px rgba(0,0,0,0.5); 
+    text-shadow: none; 
 }
 
+/* === चैट रिस्पांस कंटेनर (CHAT RESPONSE CONTAINER) === */
 #chatResponse {
-    background-color: rgba(10, 20, 30, 0.8);
-    border: 1px solid rgba(0, 200, 255, 0.5);
+    /* CRITICAL: Background color changed to a subtle dark grey/black for contrast against the pure black body */
+    background-color: rgba(20, 20, 20, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin:0%;
+    padding:0%;
+    box-sizing: border-box;
+    /* Added to ensure correct spacing for internal elements */
+    width: 100%;
+    
     border-radius: 1rem;
     padding: 1.5rem;
     margin-bottom: 2rem;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+    /* Subtle white box shadow */
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 #chatTypingIndicatorCompact {
@@ -143,14 +163,16 @@ body::before {
     margin-bottom: 0.5rem;
 }
 
-/* === FIXED SEARCH BAR STYLES === */
+/* === फिक्स्ड सर्च बार स्टाइल्स (FIXED SEARCH BAR STYLES) === */
 #compactInputBar {
     /* Position fixed to prevent scrolling with body content */
     position: fixed;
     bottom: 0;
     
     /* Fixed Length (40rem) as requested */
-    max-width: 100rem; 
+    /* Note: If you want the bar to be limited to 40rem max-width, uncomment the line below */
+    /* max-width: 40rem; */ 
+    max-width: 100%; /* Keeps it full width as per original code */
     width: 100%;
     
     /* CRITICAL FOR CENTERING FIXED ELEMENT: */
@@ -159,12 +181,13 @@ body::before {
 
     padding: 1rem;
     padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0));
-    background-color: rgba(10, 20, 30, 0.9);
+    /* CRITICAL: Background changed to very dark, slightly transparent black */
+    background-color: rgba(10, 10, 10, 0.95);
     z-index: 10;
-    box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.5);
-    border-top: 1px solid rgba(0, 220, 255, 0.8);
+    /* Subtle shadow/border for separation */
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.8);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 
-    /* Use flex to handle the inner content alignment (typing indicator/input field) */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -172,14 +195,19 @@ body::before {
 
 /* Ensure inner content respects the padding and centers itself */
 #compactInputBar > div {
-    /* Ensure the input area takes full available width within the fixed container's max-width */
+    /* Added max-width to inner div to match app-container for premium centering */
+    max-width: 40rem; 
     width: 100%;
 }
 
 #chatInputCompact {
     border-radius: 9999px !important; 
-    background-color: #2d3748 !important; 
-    border: 1px solid #4a5568 !important;
+    /* Input background: slightly lighter dark gray */
+    background-color: #1a1a1a !important; 
+    /* Subtle white border */
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    /* White text inside input */
+    color: #ffffff !important; 
     padding-right: 3rem; 
 }
 
@@ -190,15 +218,18 @@ body::before {
     top: 50%;
     transform: translateY(-50%);
     z-index: 11;
-    color: #a5f3fc; 
+    /* Icon color changed to white for premium look */
+    color: #ffffff; 
 }
 
 .mic-active {
-    color: #ef4444 !important; 
+    /* Active mic color: subtle red/white blend */
+    color: #ff6b6b !important; 
 }
 
 #sendMessageButtonCompact {
-    background-color: #4f46e5; 
+    /* Send button background: subtle dark color */
+    background-color: #333333; 
     border-radius: 50%;
     width: 48px;
     height: 48px;
@@ -206,4 +237,5 @@ body::before {
     align-items: center;
     justify-content: center;
     margin-left: 0.5rem;
+    /* Icon color is white by default (inherited from body/global styles) */
 }
